@@ -7,7 +7,7 @@ Flask app development
 Containerization with Docker
 Infrastructure as Code using Terraform
 Automated EC2 provisioning and deployment
-This is perfect for building a portfolio project showcasing cloud deployment and infrastructure management skills.
+This is ideal for building a portfolio project that showcases cloud deployment and infrastructure management skills.
 
 Project Structure
 
@@ -17,8 +17,8 @@ terraform-flask/
 - outputs.tf       # Terraform outputs (e.g., EC2 public IP)
 - .gitignore       # Ignored files (Terraform binaries, state files, Python caches)
 - app/             # Flask application code
-   ── app.py
-   ── requirements.txt
+   - app.py
+   - requirements.txt
 - Dockerfile       # Docker configuration for Flask app
 
 Features
