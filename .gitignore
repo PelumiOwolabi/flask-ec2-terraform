@@ -1,0 +1,24 @@
+# Terraform local directories and state files
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+terraform.tfvars
+terraform.tfvars.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python / Flask files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+*.env
