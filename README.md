@@ -23,11 +23,11 @@ terraform-flask/
 
 Features
 
-Flask Web App: Simple Python application with a REST endpoint.
-Dockerized: Containerized for easy deployment.
-Terraform-managed EC2: Infrastructure as Code to provision EC2 and Security Groups.
-Automated Deployment: Docker container runs automatically on EC2 using my data on my docker hub.
-Versioned Infrastructure: Terraform files allow reproducible infrastructure setup.
+- Flask Web App: Simple Python application with a REST endpoint.
+- Dockerized: Containerized for easy deployment.
+- Terraform-managed EC2: Infrastructure as Code to provision EC2 and Security Groups.
+- Automated Deployment: Docker container runs automatically on EC2 using my data on my Docker Hub.
+- Versioned Infrastructure: Terraform files allow reproducible infrastructure setup.
 
 Prerequisites
 AWS Account with credentials configured
@@ -44,7 +44,6 @@ cd flask-ec2-terraform
 docker build -t adubi1e/flask-app:latest ./app
 docker push adubi1/flask-app:latest
 
-Replace your-dockerhub-username with your Docker Hub account.
 3. Initialize Terraform
 terraform init
 
