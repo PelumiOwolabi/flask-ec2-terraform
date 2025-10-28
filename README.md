@@ -1,4 +1,4 @@
-## **flask-ec2-terraform` README (Linked Version)**
+## **flask-ec2-terraform README (Linked Version)**
 
 # Flask EC2 Terraform
 
