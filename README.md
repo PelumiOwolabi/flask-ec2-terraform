@@ -1,57 +1,73 @@
-Flask EC2 Deployment with Terraform & Docker
+## **flask-ec2-terraform` README (Linked Version)**
 
-Overview
-This repository contains a simple Flask web application that is Dockerized and deployed to AWS EC2 using Terraform.
-It demonstrates a complete DevOps workflow:
-Flask app development
-Containerization with Docker
-Infrastructure as Code using Terraform
-Automated EC2 provisioning and deployment
-This is ideal for building a portfolio project that showcases cloud deployment and infrastructure management skills.
+```markdown
+# Flask EC2 Terraform
 
-Project Structure
+This repository contains **Terraform configuration** to automatically deploy a **Dockerized Flask app** on AWS EC2.
 
-terraform-flask/
-- main.tf          # Terraform configuration for EC2, Security Group, and Docker deployment
-- variables.tf     # Terraform variables
-- outputs.tf       # Terraform outputs (e.g., EC2 public IP)
-- .gitignore       # Ignored files (Terraform binaries, state files, Python caches)
-- app/             # Flask application code
-   - app.py
-   - requirements.txt
-- Dockerfile       # Docker configuration for Flask app
+It is linked to [`flask-ec2-deploy`](https://github.com/PelumiOwolabi/flask-ec2-deploy), which contains the Flask app and Dockerfile.
 
-Features
+---
 
-- Flask Web App: Simple Python application with a REST endpoint.
-- Dockerized: Containerized for easy deployment.
-- Terraform-managed EC2: Infrastructure as Code to provision EC2 and Security Groups.
-- Automated Deployment: Docker container runs automatically on EC2 using my data on my Docker Hub.
-- Versioned Infrastructure: Terraform files allow reproducible infrastructure setup.
+## Features
 
-Prerequisites
-AWS Account with credentials configured
-Terraform installed locally
-Docker installed (for building the image)
-Git installed
+- Provision EC2 instance in AWS
+- Create security group and key pair
+- Install Docker automatically
+- Run Flask Docker container on startup
+- Output EC2 public IP
+- Fully reproducible infrastructure
 
-Setup Instructions
-1. Clone the repository
-git clone https://github.com/PelumiOwolabi/flask-ec2-terraform.git
+---
+
+## Requirements
+
+- Terraform >= 1.0
+- AWS CLI configured with credentials
+- Docker image of the Flask app available on Docker Hub or ECR
+
+---
+
+## Setup & Deployment
+
+
+```bash
+**Clone the repository**
+git clone https://github.com/<your-username>/flask-ec2-terraform.git
 cd flask-ec2-terraform
 
-2. Build the Docker image
-docker build -t adubi1e/flask-app:latest ./app
-docker push adubi1/flask-app:latest
-
-3. Initialize Terraform
+Initialize Terraform
 terraform init
 
-4. Review the plan
+Check plan
 terraform plan
 
-5. Apply Terraform configuration
+Apply configuration
 terraform apply
+Type yes when prompted.
+Terraform will output the EC2 public IP.
 
-6. Access the Flask app
-terraform output: 18.135.45.212
+Access Flask app
+http://<EC2_PUBLIC_IP>:5000
+
+Linking with Flask App
+Make sure you have built and pushed your Docker image from flask-ec2-deploy to Docker Hub or ECR:
+
+```bash
+docker tag flask-app <your-dockerhub-username>/flask-app:latest
+docker push <your-dockerhub-username>/flask-app:latest
+
+Update the docker_image variable in Terraform:
+variable "docker_image" {
+  default = "<your-dockerhub-username>/flask-app:latest"
+}
+
+Run terraform apply - Terraform will deploy your app automatically using the image you pushed.
+
+Notes
+Existing EC2, Key Pair, and Security Group can be imported if needed:
+terraform import aws_instance.terraform-flask <EC2_INSTANCE_ID>
+terraform import aws_key_pair.flask_key <KEY_PAIR_NAME>
+terraform import aws_security_group.flask_sg <SECURITY_GROUP_ID>
+
+Never store AWS credentials or secrets in GitHub.
