@@ -12,16 +12,17 @@ This is perfect for building a portfolio project showcasing cloud deployment and
 Project Structure
 
 terraform-flask/
-├── main.tf          # Terraform configuration for EC2, Security Group, and Docker deployment
-├── variables.tf     # Terraform variables
-├── outputs.tf       # Terraform outputs (e.g., EC2 public IP)
-├── .gitignore       # Ignored files (Terraform binaries, state files, Python caches)
-├── app/             # Flask application code
-│   ├── app.py
-│   └── requirements.txt
-├── Dockerfile       # Docker configuration for Flask app
+- main.tf          # Terraform configuration for EC2, Security Group, and Docker deployment
+- variables.tf     # Terraform variables
+- outputs.tf       # Terraform outputs (e.g., EC2 public IP)
+- .gitignore       # Ignored files (Terraform binaries, state files, Python caches)
+- app/             # Flask application code
+   ── app.py
+   ── requirements.txt
+- Dockerfile       # Docker configuration for Flask app
 
 Features
+
 Flask Web App: Simple Python application with a REST endpoint.
 Dockerized: Containerized for easy deployment.
 Terraform-managed EC2: Infrastructure as Code to provision EC2 and Security Groups.
