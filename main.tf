@@ -2,18 +2,66 @@ provider "aws" {
   region = "eu-west-2"
 }
 
-# Key Pair
-resource "aws_key_pair" "flask_key" {
-  key_name   = "demo-key"
-  public_key = file("terraform-flask.pub")
+
+# VPC
+resource "aws_vpc" "main" {
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "flask-vpc"
+  }
 }
 
-# Security Group
+# PUBLIC SUBNET
+resource "aws_subnet" "public" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = "eu-west-2a"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "flask-public-subnet"
+  }
+}
+
+
+# INTERNET GATEWAY
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "flask-igw"
+  }
+}
+
+# ROUTE TABLE + ASSOCIATION
+resource "aws_route_table" "public_rt" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+
+  tags = {
+    Name = "flask-public-rt"
+  }
+}
+
+resource "aws_route_table_association" "public_assoc" {
+  subnet_id      = aws_subnet.public.id
+  route_table_id = aws_route_table.public_rt.id
+}
+
+# SECURITY GROUP
 resource "aws_security_group" "flask_sg" {
   name        = "flask-sg"
-  description = "Allow Flask access"
+  description = "Allow Flask + SSH"
+  vpc_id      = aws_vpc.main.id
 
   ingress {
+    description = "Flask app"
     from_port   = 5000
     to_port     = 5000
     protocol    = "tcp"
@@ -21,6 +69,7 @@ resource "aws_security_group" "flask_sg" {
   }
 
   ingress {
+    description = "SSH"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
@@ -33,25 +82,35 @@ resource "aws_security_group" "flask_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-}
-
-# EC2 Instance
-resource "aws_instance" "terraform-flask" {
-  ami             = "ami-06a8ca19af7f6f3f4"
-  instance_type   = "t2.micro"
-  key_name        = "demo-key"
-  security_groups = ["launch-wizard-1"]
 
   tags = {
-    Name = "Flask-Docker"
+    Name = "flask-sg"
   }
+}
 
-  user_data = <<-EOF
-              #!/bin/bash
-              sudo yum update -y
-              sudo amazon-linux-extras install docker -y
-              sudo service docker start
-              sudo usermod -a -G docker ec2-user
-              docker run -d -p 5000:5000 $${flask-app:latest}
-              EOF
+# KEY PAIR
+resource "aws_key_pair" "flask_key" {
+  key_name   = "flask-demo-key"
+  public_key = file("${path.module}/keys/terraform-flask.pub")
+}
+
+
+# EC2 INSTANCE
+resource "aws_instance" "flask_server" {
+  ami                         = "ami-0eb260c4d5475b901" # Amazon Linux 2 (eu-west-2)
+  instance_type               = "t2.micro"
+  subnet_id                   = aws_subnet.public.id
+  associate_public_ip_address = true
+
+  vpc_security_group_ids = [
+    aws_security_group.flask_sg.id
+  ]
+
+  key_name = aws_key_pair.flask_key.key_name
+
+  user_data = file("user_data.sh")
+
+  tags = {
+    Name = "Flask-Server"
+  }
 }

@@ -23,3 +23,7 @@ env/
 venv/
 *.env
 terraform-flask
+
+# Key files: ignore private keys in keys/, but keep public (.pub)
+keys/*
+!keys/*.pub
